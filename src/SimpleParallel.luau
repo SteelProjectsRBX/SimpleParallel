@@ -100,8 +100,6 @@ function SimpleParallelConstructor.new(module: ModuleScript, workers: number, ti
 	end
 	
 	local newTemplate = script.ParallelInstanceTemplate:Clone()
-	local clonedModule = module:Clone()
-	
 	local areScriptsSetUp = false -- If you're reading this and using Immediate SignalBehavior, you can turn this to true without any issues.
 
 	local ParallelInstance = {
@@ -110,11 +108,11 @@ function SimpleParallelConstructor.new(module: ModuleScript, workers: number, ti
 		Tasks = {},
 		PerformingWork = false,
 	}
-
-	clonedModule.Parent = newTemplate
+	
+	newTemplate.LoadedModule.Value = module -- short access to the path of the module
 
 	for i = 1, workers do
-		local newActor = script.ActorTemplate:Clone()
+		local newActor = newTemplate.ActorTemplate:Clone()
 		local workerScript = newActor[VMScriptName]:: BaseScript
 		local microProfilerName = name or ""
 		
@@ -151,6 +149,7 @@ function SimpleParallelConstructor.new(module: ModuleScript, workers: number, ti
 		
 	function ParallelInstance:Destroy()
 		ParallelInstance.Container:Destroy()
+		
 		table.clear(ParallelInstance)
 	end
 
