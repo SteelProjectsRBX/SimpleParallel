@@ -1,2 +1,2 @@
 --!native
-require(script.Parent.SetupWorker) -- Sets up everything
+require(script.Parent:FindFirstChildOfClass("ModuleScript")) -- Sets up everything
